@@ -1,0 +1,18 @@
+
+%token ADD_ASSIGN AND AND_exp BIT_AND_ASSIGN BIT_OR_ASSIGN BIT_XOR_ASSIGN 
+%token BREAK CASE CHAR CONTINUE C_CHAR C_FLOAT 
+%token C_INT C_STRING DEFAULT DIV_ASSIGN DO ELSE 
+%token EQUAL FLOAT GREATER_EQUAL ID IF INT 
+%token LEFT_SHIFT LEFT_SHIFT_ASSIGN LESS_EQUAL MOD_ASSIGN MUL_ASSIGN OR 
+%token POINTER RETURN RIGHT_SHIFT RIGHT_SHIFT_ASSIGN SELF_ADD SELF_SUB 
+%token SIZEOF STRUCT SUB_ASSIGN SWITCH TYPEDEF UNEQUAL 
+%token UNION VOID WHILE additive_exp argument_exp_list assignment_exp 
+%token cast_exp ccode compound_stm conditional_exp constant_exp dec 
+%token dec_list declaractor declarator designation designator designator_list 
+%token direct_declarator equality_exp exclusive exclusive_OR_exp exp exp_stm 
+%token for for_loop_exp identifier_list inclusive_OR_exp init_dec_list init_declarator 
+%token initializer initializer_list iteration_stm jump_stm labeled_stm logical_AND_exp 
+%token logical_OR_exp multiplicative_exp parameter_dec parameter_list pointer postfix_exp 
+%token primary_exp relational_exp selection_stm shift_exp specifiers stm 
+%token stm_list struct_dec struct_dec_list struct_declarator struct_declarator_list struct_or_union_specifier 
+%token type_name typedef_name unary_exp 

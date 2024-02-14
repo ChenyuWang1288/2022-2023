@@ -1,0 +1,20 @@
+int main();
+
+int fun1(int a);
+
+int fun2(int a, int b);
+
+int fun3(int c, int a, int b);
+
+int fun4(int k, int a, int b);
+
+int *fun5(int *a, int b);
+
+char fun6(int a, int b);
+
+int a(){
+    
+    int a = 2;
+
+    int b = 3;
+};

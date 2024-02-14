@@ -1,0 +1,47 @@
+struct {
+
+    int a;
+
+    int b;
+
+};
+
+struct a {
+
+    int a;
+
+    int b;
+
+};
+
+struct a {
+    
+    int c;
+
+    int d;
+
+    int **a;
+
+};
+
+struct a {
+    
+    int c;
+
+    int d;
+
+    int **a;
+
+} ls;
+
+struct a {
+    
+    int c;
+
+    int d;
+
+    int **a;
+
+} ls[1][2];
+
+

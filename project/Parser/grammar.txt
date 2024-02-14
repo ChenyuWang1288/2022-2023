@@ -1,0 +1,328 @@
+ccode:
+	exp
+	|stm
+	|dec
+	|ccode exp
+	|ccode stm
+	|ccode dec
+	|
+	;
+
+stm:
+	labeled_stm      
+	|compound_stm
+	|exp_stm
+	|selection_stm
+	|iteration_stm
+	|jump_stm
+	;
+	
+labeled_stm:
+	CASE constant_exp stm ':'
+	|DEFAULT stm
+	;
+
+compound_stm:
+	'{' dec_list stm_list '}'
+	|'{' dec_list '}'
+	|'{' stm_list '}'
+	|'{' '}'
+	;
+
+dec_list:
+	dec
+	|dec_list dec
+	;
+
+stm_list:
+	stm
+	|stm_list stm
+	
+exp_stm:
+	exp ';'
+	|';'
+	;
+
+for_loop_exp:
+	exp
+	|
+	;
+
+iteration_stm:
+		WHILE '(' exp ')' stm
+		|DO stm WHILE '(' exp ')' ';'
+		|FOR '(' for_loop_exp ';' for_loop_exp ';' for_loop_exp ')' stm
+		;
+
+selection_stm:
+	IF '(' exp ')' stm
+	|IF '(' exp ')' stm ELSE stm
+	|SWITCH '(' exp ')' stm
+	;
+
+jump_stm:
+	CONTINUE ';'
+	|BREAK ';'
+	|RETURN exp ';'
+	|RETURN ';'
+	;
+
+exp:
+	assignment_exp
+	|exp ',' assignment_exp
+	;
+
+primary_exp:
+	ID
+	|C_INT
+	|C_CHAR
+	|C_FLOAT
+	|C_STRING
+	|'(' exp ')'
+    ;
+
+postfix_exp:
+	primary_exp
+	|postfix_exp '[' exp ']'
+	|postfix_exp '(' argument_exp_list ')'
+	|postfix_exp '(' ')'
+	|postfix_exp '.' ID
+	|POINTER ID
+	|postfix_exp SELF_ADD
+	|postfix_exp SELF_SUB
+	;
+	
+argument_exp_list:
+	assignment_exp
+	|argument_exp_list ',' assignment_exp
+	;
+
+unary_exp:
+	postfix_exp
+	|SELF_ADD unary_exp
+	|SELF_SUB unary_exp
+	|'&' cast_exp
+	|'*' cast_exp
+	|'+' cast_exp
+	|'-' cast_exp
+	|'~' cast_exp
+	|'!' cast_exp
+	|SIZEOF unary_exp
+	;
+
+cast_exp:
+	unary_exp
+	|'(' type_name ')' cast_exp
+	;
+
+multiplicative_exp:
+	cast_exp
+	|multiplicative_exp '*' cast_exp
+ 	|multiplicative_exp '/' cast_exp
+ 	|multiplicative_exp '%' cast_exp
+	;
+	
+shift_exp:
+	additive_exp
+	|shift_exp LEFT_SHIFT additive_exp
+	|shift_exp RIGHT_SHIFT additive_exp
+	;
+
+relational_exp:
+	shift_exp
+ 	|relational_exp '<' shift_exp
+ 	|relational_exp '>' shift_exp
+ 	|relational_exp LESS_EQUAL shift_exp
+ 	|relational_exp GREATER_EQUAL shift_exp
+	 ;
+	 
+equality_exp:
+ 	relational_exp
+ 	|equality_exp EQUAL relational_exp
+ 	|equality_exp UNEQUAL relational_exp
+	 ;
+
+AND_exp:
+ 	equality_exp
+ 	|AND_exp '&' equality_exp
+     ;
+
+additive_exp:
+	multiplicative_expression
+ 	|additive_exp '+' multiplicative_exp
+ 	|additive_exp '-' multiplicative_exp
+	;
+
+exclusive_OR_exp:
+	AND_exp
+	|exclusive_OR_exp '^' AND_exp
+	;
+
+inclusive_OR_exp:
+	exclusive_OR_exp
+	|inclusive_OR_exp '|' exclusive_OR_exp
+	;
+
+logical_AND_exp:
+	inclusive_OR_exp
+	|logical_AND_exp AND inclusive_OR_exp
+	;
+
+logical_OR_exp:
+	logical_AND_exp
+	|logical_OR_exp OR logical_AND_exp
+    ;
+
+conditional_exp:
+	logical_OR_exp
+	|logical_OR_exp '?' exp ':' conditional_exp
+	;
+	
+assignment_exp:
+ 	conditional_exp
+ 	|unary_exp '=' assignment_exp
+ 	|unary_exp MUL_ASSIGN assignment_exp
+ 	|unary_exp DIV_ASSIGN assignment_exp
+ 	|unary_exp MOD_ASSIGN assignment_exp
+ 	|unary_exp ADD_ASSIGN assignment_exp
+ 	|unary_exp SUB_ASSIGN assignment_exp
+ 	|unary_exp LEFT_SHIFT_ASSIGN assignment_exp
+ 	|unary_exp RIGHT_SHIFT_ASSIGN assignment_exp
+ 	|unary_exp BIT_AND_ASSIGN assignment_exp
+ 	|unary_exp BIT_XOR_ASSIGN assignment_exp
+ 	|unary_exp BIT_OR_ASSIGN assignment_exp
+ 	;
+     
+constant_exp:
+	conditional_exp
+	;
+
+dec:
+	specifiers init_dec_list ';'
+	;
+
+specifiers:
+	TYPEDEF  
+ 	|VOID  
+ 	|CHAR  
+ 	|INT
+ 	|FLOAT
+ 	|struct_or_union_specifier 
+ 	|type_name
+ 	;
+
+init_dec_list:
+	init_declarator
+	|init_dec_list ',' init_declarator
+	;
+	
+init_declarator:
+	declarator
+	|declarator '=' initializer
+    ;
+
+struct_or_union_specifier:
+	STRUCT ID '{' struct_dec_list '}'
+	|STRUCT '{' struct_dec_list '}'
+	|STRUCT ID
+	|UNION ID '{' struct_dec_list '}'
+	|UNION '{' struct_dec_list '}'
+	|UNION ID
+	;
+
+struct_dec_list:
+	struct_dec
+	|struct_dec_list struct_dec
+	;
+
+struct_dec:
+	|specifiers ';'
+	|specifiers struct_declarator_list ';'
+	;
+
+struct_declarator_list:
+	struct_declarator
+	|struct_declarator_list ',' struct_declarator
+	;
+
+struct_declarator:
+	declarator
+	|declarator':' constant_exp
+	|':' constant_exp
+	;
+
+declarator:
+	'*' direct_declarator
+	|direct_declarator
+	;
+
+
+direct_declarator:
+	ID
+	|'(' ID ')'
+	|direct_declarator '[' assignment_exp ']'
+	|direct_declarator '[' ']'
+	|direct_declarator '[' specifiers '*' ']'
+	|direct_declarator '(' parameter_list ')'
+	|direct_declarator '(' identifier_list ')'
+	|direct_declarator '(' ')'      
+	;
+
+pointer:
+	'*'
+    | '*' pointer
+    ;
+   
+parameter_list: 
+	parameter_dec
+	|parameter_list ',' parameter_dec
+	;
+	
+parameter_dec:
+	specifiers declarator
+    ;
+
+identifier_list:
+	ID
+	|identifier_list, ID
+	;
+
+type_name:
+	VOID 
+	|CHAR 
+	|INT
+	|FLOAT     
+	|struct_or_union_specifier
+	|typedef_name
+	;
+
+typedef_name:
+	ID
+	;
+
+initializer:
+	assignment_exp   
+	|'{' initializer_list '}'  
+	|'{' initializer_list ',' '}'
+	;
+
+initializer_list:
+	initializer
+	|designation initializer
+	|initializer_list ',' initializer
+	|initializer_list ',' designation initializer
+	;
+
+designation:
+	designator_list '='
+    ;
+
+designator_list
+	designator
+	|designator_list designator
+	;
+
+designator:
+	'[' constant_exp ']'
+	|'.' ID
+	;

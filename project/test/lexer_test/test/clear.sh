@@ -1,0 +1,1 @@
+rm ./out/clexer.out ./out/outfile.txt ./lex.yy.c 
